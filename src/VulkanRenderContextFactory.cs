@@ -203,8 +203,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 			handle.Free();
 		}
 
-		// TODO: Port Create*Surface methods
-		return Result.Success;//CreateSurface(vk, window, ref backend);
+		return CreateSurface(vk, window, ref backend);
 	}
 
 	static GraphicsPresentIndexPair GetQueueFamilyIndex(Vk vk, PhysicalDevice physicalDevice, SurfaceKHR surface)
