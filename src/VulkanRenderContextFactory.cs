@@ -68,7 +68,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 		Span<PhysicalDevice> devices = new PhysicalDevice[count];
 		VulkanTools.Ensure(vk.EnumeratePhysicalDevices(instance, &count, devices));
 
-		Device device;
 		SurfaceKHR vkSurface = new(unchecked((ulong)backend.RenderSurface.ToInt64()));
 
 		List<GCHandle> handles = new(_deviceExtensions.Length + 2);
@@ -94,7 +93,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 				PpEnabledExtensionNames = GetDeviceExtensions(vk, devices[deviceIndex], handles)
 			};
 
-			VulkanTools.Ensure(vk.CreateDevice(devices[deviceIndex], in createInfo, null, out device));
+			VulkanTools.Ensure(vk.CreateDevice(devices[deviceIndex], in createInfo, null, out var device));
 		}
 
 		foreach (var handle in handles)
@@ -192,6 +191,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 		};
 
 		VulkanTools.Ensure(vk.CreateInstance(in instanceCreateInfo, null, out var vkInstance));
+		vk.CurrentInstance = vkInstance;
 		backend = new()
 		{
 			FourCC = CharCodes.Vulkan,
