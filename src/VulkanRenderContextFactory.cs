@@ -6,7 +6,6 @@ using Silk.NET.Vulkan.Extensions.KHR;
 using Speed.Engine.Camera;
 using Speed.Engine.Logging;
 using Speed.Engine.Render;
-using Speed.Engine.Render.Shaders;
 using Speed.Viewer;
 using Speed.Viewer.Render;
 using Speed.Viewer.Render.Backend;
@@ -161,11 +160,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 		{
 			vk.DestroyInstance(new(backend.BackendInstance), null);
 		}
-	}
-
-	public Shader? CreateShader(ShaderType type, byte[] shader, string mainFunction, ILogger? logger)
-	{
-		return null;
 	}
 
 	static Result CreateInstanceAndSurface(Vk vk, IWindow window, Version32 apiVersion, IEnumerable<string> optionalExtensions, out RenderBackend backend)
