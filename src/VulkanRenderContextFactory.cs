@@ -137,7 +137,9 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 
 		VulkanTools.Ensure(CreateInstanceAndSurface(vk, window, version, _instanceExtensions, out var vkBackend));
 
+		vkBackend.Version = new(version.Major, version.Minor, version.Patch);
 		backend = vkBackend;
+		
 		return true;
 	}
 
