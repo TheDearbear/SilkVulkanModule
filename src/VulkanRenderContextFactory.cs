@@ -54,6 +54,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 
 		Vk vk = Vk.GetApi();
 		Instance instance = new(backend.BackendInstance);
+		vk.CurrentInstance = instance;
 
 		uint count = 0;
 		VulkanTools.Ensure(vk.EnumeratePhysicalDevices(instance, ref count, null));
@@ -105,10 +106,10 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 		factoryLogger?.Debug("Using GPU with name: {GPUName}", VulkanTools.ConvertUTF8(props.DeviceName));
 		(factoryLogger as IDisposable)?.Dispose();
 
-		// TODO: Port VulkanRenderContext and VulkanRenderer
-		//var ctx = new VulkanRenderContext(camera, logger, device, instance);
-		//output = new(ctx, new VulkanRenderer(devices[deviceIndex], device, vkSurface, queues, window, ctx));
-		output = null;
+		var ctx = new VulkanRenderContext(camera, logger, vk);
+		// TODO: Port VulkanRenderer
+		output = new(ctx, null);//new VulkanRenderer(devices[deviceIndex], device, vkSurface, queues, window, ctx));
+		
 		return true;
 	}
 
@@ -151,11 +152,14 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 		}
 
 		Vk vk = Vk.GetApi();
-		var khrSurface = new KhrSurface(vk.Context);
+		if (!vk.TryGetInstanceExtension(new(backend.BackendInstance), out KhrSurface surface))
+		{
+			throw new ArgumentException("Cannot obtain Surface extension!", nameof(backend));
+		}
 
 		if (backend.RenderSurface != IntPtr.Zero)
 		{
-			khrSurface.DestroySurface(new(backend.BackendInstance), new(unchecked((ulong)backend.RenderSurface.ToInt64())), null);
+			surface.DestroySurface(new(backend.BackendInstance), new(unchecked((ulong)backend.RenderSurface.ToInt64())), null);
 		}
 
 		if (backend.BackendInstance != IntPtr.Zero)
@@ -187,7 +191,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 		};
 
 		VulkanTools.Ensure(vk.CreateInstance(in instanceCreateInfo, null, out var vkInstance));
-		vk.CurrentInstance = vkInstance;
 		backend = new()
 		{
 			FourCC = CharCodes.Vulkan,
@@ -213,7 +216,10 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 		Span<QueueFamilyProperties> arr = new QueueFamilyProperties[unchecked((int)count)];
 		vk.GetPhysicalDeviceQueueFamilyProperties(physicalDevice, &count, arr);
 
-		var khrSurface = new KhrSurface(vk.Context);
+		if (!vk.TryGetInstanceExtension(vk.CurrentInstance!.Value, out KhrSurface khrSurface))
+		{
+			throw new ArgumentException("Cannot obtain Surface extension!", nameof(vk));
+		}
 
 		for (uint i = 0; i < count && (graphics is null || present is null); i++)
 		{
