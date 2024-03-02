@@ -1,0 +1,5 @@
+root = true
+
+[*.{cs,vb}]
+end_of_line = lf
+indent_style = space
