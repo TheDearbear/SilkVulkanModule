@@ -52,8 +52,8 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
     public event EventHandler<double>? NewRenderFrame;
 
     readonly Vk _vk;
-	readonly ExtDebugUtils _debugUtils;
-	readonly Device _device;
+    readonly ExtDebugUtils _debugUtils;
+    readonly Device _device;
     readonly Instance _instance;
 
     PfnDebugUtilsMessengerCallbackEXT? _debugCallback;
@@ -138,46 +138,46 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
     }
 
     static DebugUtilsMessengerCallbackFunctionEXT CreateDebugMessengerCallback(ILogger loggerInstance)
-	{
-		ILogger logger = loggerInstance.ForContextShortName("Vulkan Debug");
+    {
+        ILogger logger = loggerInstance.ForContextShortName("Vulkan Debug");
 
-		uint DebugUtilsMessengerCallback(DebugUtilsMessageSeverityFlagsEXT messageSeverity,
+        uint DebugUtilsMessengerCallback(DebugUtilsMessageSeverityFlagsEXT messageSeverity,
             DebugUtilsMessageTypeFlagsEXT messageTypes,
             DebugUtilsMessengerCallbackDataEXT* pCallbackData,
             void* pUserData)
-		{
-			string format = "[{MessageId}/{MessageIdName}] [{Type}] {Message}";
+        {
+            string format = "[{MessageId}/{MessageIdName}] [{Type}] {Message}";
 
             var zeroPtr = IntPtr.Zero.ToPointer();
 
-			string idName = pCallbackData->PMessageIdName != zeroPtr ? VulkanTools.ConvertUTF8(pCallbackData->PMessageIdName) : string.Empty;
+            string idName = pCallbackData->PMessageIdName != zeroPtr ? VulkanTools.ConvertUTF8(pCallbackData->PMessageIdName) : string.Empty;
             string message = pCallbackData->PMessage != zeroPtr ? VulkanTools.ConvertUTF8(pCallbackData->PMessage) : string.Empty;
 
-			string typeStr = messageTypes switch
-			{
-				DebugUtilsMessageTypeFlagsEXT.GeneralBitExt => "General",
-				DebugUtilsMessageTypeFlagsEXT.ValidationBitExt => "Validation",
-				DebugUtilsMessageTypeFlagsEXT.PerformanceBitExt => "Performance",
-				DebugUtilsMessageTypeFlagsEXT.DeviceAddressBindingBitExt => "Device address binding",
-				_ => "Unknown"
-			};
+            string typeStr = messageTypes switch
+            {
+                DebugUtilsMessageTypeFlagsEXT.GeneralBitExt => "General",
+                DebugUtilsMessageTypeFlagsEXT.ValidationBitExt => "Validation",
+                DebugUtilsMessageTypeFlagsEXT.PerformanceBitExt => "Performance",
+                DebugUtilsMessageTypeFlagsEXT.DeviceAddressBindingBitExt => "Device address binding",
+                _ => "Unknown"
+            };
 
-			LogEventLevel level = messageSeverity switch
-			{
-				DebugUtilsMessageSeverityFlagsEXT.VerboseBitExt => LogEventLevel.Verbose,
-				DebugUtilsMessageSeverityFlagsEXT.InfoBitExt => LogEventLevel.Information,
-				DebugUtilsMessageSeverityFlagsEXT.WarningBitExt => LogEventLevel.Warning,
-				DebugUtilsMessageSeverityFlagsEXT.ErrorBitExt => LogEventLevel.Error,
-				_ => LogEventLevel.Debug
-			};
+            LogEventLevel level = messageSeverity switch
+            {
+                DebugUtilsMessageSeverityFlagsEXT.VerboseBitExt => LogEventLevel.Verbose,
+                DebugUtilsMessageSeverityFlagsEXT.InfoBitExt => LogEventLevel.Information,
+                DebugUtilsMessageSeverityFlagsEXT.WarningBitExt => LogEventLevel.Warning,
+                DebugUtilsMessageSeverityFlagsEXT.ErrorBitExt => LogEventLevel.Error,
+                _ => LogEventLevel.Debug
+            };
 
-			logger.Write(level, format, pCallbackData->MessageIdNumber, idName, typeStr, message);
+            logger.Write(level, format, pCallbackData->MessageIdNumber, idName, typeStr, message);
 
-			return 0;
-		}
+            return 0;
+        }
 
         return DebugUtilsMessengerCallback;
-	}
+    }
 
     void TestDebugMessenger()
     {
@@ -218,7 +218,7 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
     }
 #if DEBUG
 
-	void RegisterDebugMessenger()
+    void RegisterDebugMessenger()
     {
         if (_messenger.HasValue)
         {
@@ -231,13 +231,13 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
             DebugUtilsMessageSeverityFlagsEXT.WarningBitExt;
 
         var type = DebugUtilsMessageTypeFlagsEXT.GeneralBitExt |
-			DebugUtilsMessageTypeFlagsEXT.ValidationBitExt |
-			DebugUtilsMessageTypeFlagsEXT.PerformanceBitExt |
-			DebugUtilsMessageTypeFlagsEXT.DeviceAddressBindingBitExt;
+            DebugUtilsMessageTypeFlagsEXT.ValidationBitExt |
+            DebugUtilsMessageTypeFlagsEXT.PerformanceBitExt |
+            DebugUtilsMessageTypeFlagsEXT.DeviceAddressBindingBitExt;
 
         _debugCallback = new(CreateDebugMessengerCallback(Logger ?? Log.Logger));
 
-		var info = new DebugUtilsMessengerCreateInfoEXT()
+        var info = new DebugUtilsMessengerCreateInfoEXT()
         {
             SType = StructureType.DebugUtilsMessengerCreateInfoExt,
             MessageSeverity = severity,
@@ -245,11 +245,11 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
             PfnUserCallback = _debugCallback.Value
         };
 
-		VulkanTools.Ensure(_debugUtils.CreateDebugUtilsMessenger(_instance, in info, null, out var messenger));
+        VulkanTools.Ensure(_debugUtils.CreateDebugUtilsMessenger(_instance, in info, null, out var messenger));
         _messenger = messenger;
     }
 
-	void UnregisterDebugMessenger()
+    void UnregisterDebugMessenger()
     {
         if (_messenger is null)
         {

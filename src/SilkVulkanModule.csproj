@@ -1,22 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://dotnet.github.io/Silk.NET/nuget/experimental/index.json</RestoreAdditionalProjectSources>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://dotnet.github.io/Silk.NET/nuget/experimental/index.json</RestoreAdditionalProjectSources>
+  </PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Silk.NET.Vulkan" Version="2.20.0-build4214.0" />
-	  <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" Version="2.20.0-build4214.0" />
-	  <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.20.0-build4214.0" />
-	  <PackageReference Include="Silk.NET.Vulkan.Extensions.MVK" Version="2.20.0-build4214.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.Vulkan" Version="2.20.0-build4214.0" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" Version="2.20.0-build4214.0" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.20.0-build4214.0" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.MVK" Version="2.20.0-build4214.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="../Speed.Engine/Speed.Engine.csproj" Private="false" />
-		<ProjectReference Include="../Speed.Viewer/Speed.Viewer.csproj" Private="false" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Speed.Engine/Speed.Engine.csproj" Private="false" />
+    <ProjectReference Include="../Speed.Viewer/Speed.Viewer.csproj" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="E:\L4RH\editor\SilkVulkanModule\src\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="E:\L4RH\editor\SilkVulkanModule\src\.editorconfig" />
+  </ItemGroup>
 
 </Project>

@@ -2,6 +2,6 @@
 
 internal struct GraphicsPresentIndexPair
 {
-	public uint GraphicsFamilyIndex;
-	public uint PresentFamilyIndex;
+    public uint GraphicsFamilyIndex;
+    public uint PresentFamilyIndex;
 }
