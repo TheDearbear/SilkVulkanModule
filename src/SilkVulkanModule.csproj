@@ -20,11 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="E:\L4RH\editor\SilkVulkanModule\src\.editorconfig" />
+    <EditorConfigFiles Remove="./.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="E:\L4RH\editor\SilkVulkanModule\src\.editorconfig" />
+    <None Include="./.editorconfig" />
   </ItemGroup>
 
 </Project>
