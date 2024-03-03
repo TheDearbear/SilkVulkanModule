@@ -47,6 +47,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
                 "Expected Vulkan's FourCC ({VulkanFourCC}), got {GivenFourCC}",
                 CharCodes.Vulkan,
                 backend.FourCC == CharCodes.Null ? "*Null*" : backend.FourCC);
+            (factoryLogger as IDisposable)?.Dispose();
 
             output = null;
             return false;
@@ -61,6 +62,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         if (count == 0)
         {
             factoryLogger?.Error("Cannot find any physical devices for using by Vulkan!");
+            (factoryLogger as IDisposable)?.Dispose();
             output = null;
             return false;
         }
