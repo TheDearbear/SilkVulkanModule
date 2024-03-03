@@ -280,7 +280,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
             throw new InvalidOperationException("Provided pipeline is null or belongs to different backend!");
         }
 
-        var bindPoint = vkPipeline.Type == PipelineType.Graphics ? PipelineBindPoint.Graphics : PipelineBindPoint.Compute;
+        var bindPoint = VulkanTools.Convert(vkPipeline.Type);
 
         if (vkPipeline.Type == PipelineType.Graphics)
         {

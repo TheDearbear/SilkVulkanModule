@@ -3,6 +3,7 @@ using Silk.NET.Vulkan;
 using Speed.Engine.Render.Shaders;
 using Speed.Engine.Textures;
 using Speed.Viewer.Render.Backend;
+using Speed.Viewer.Render.Backend.Pipelines;
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -153,5 +154,13 @@ internal static class VulkanTools
             BufferUsageType.Index => AccessFlags.ShaderWriteBit | AccessFlags.IndexReadBit,
             BufferUsageType.Staging => AccessFlags.TransferReadBit | AccessFlags.TransferWriteBit,
             _ => throw new ArgumentException($"Unable to find access flags for buffer ({type})", nameof(type))
+        };
+
+    public static PipelineBindPoint Convert(PipelineType type)
+        => type switch
+        {
+            PipelineType.Graphics => PipelineBindPoint.Graphics,
+            PipelineType.Compute => PipelineBindPoint.Compute,
+            _ => throw new ArgumentException($"Unable to determine pipeline type ({type})", nameof(type))
         };
 }
