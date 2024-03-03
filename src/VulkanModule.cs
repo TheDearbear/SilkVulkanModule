@@ -23,6 +23,7 @@ public sealed class VulkanModule : Module
         if (_factory is not null)
         {
             RenderManager.Factories.Remove(_factory);
+            _factory = null;
         }
     }
 }
