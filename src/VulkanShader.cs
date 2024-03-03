@@ -4,7 +4,7 @@ using System;
 
 namespace VulkanModule;
 
-internal unsafe class VulkanShader : Shader
+internal unsafe sealed class VulkanShader : Shader
 {
     internal ShaderModule Shader { get; }
 

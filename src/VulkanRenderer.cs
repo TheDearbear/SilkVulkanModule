@@ -14,7 +14,7 @@ using VkSemaphore = Silk.NET.Vulkan.Semaphore;
 
 namespace VulkanModule;
 
-internal class VulkanRenderer : IRenderer
+internal sealed class VulkanRenderer : IRenderer
 {
     public IBackendFactory BackendFactory { get; }
 

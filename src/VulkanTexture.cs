@@ -5,7 +5,7 @@ using System;
 
 namespace VulkanModule;
 
-internal unsafe partial class VulkanTexture : Texture
+internal unsafe sealed partial class VulkanTexture : Texture
 {
     internal ValueTuple<Image, ImageView>? Image { get; private set; }
     internal ImageLayout NativeLayout { get; set; }

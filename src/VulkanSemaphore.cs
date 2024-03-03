@@ -7,7 +7,7 @@ using VkSemaphore = Silk.NET.Vulkan.Semaphore;
 
 namespace VulkanModule;
 
-internal unsafe class VulkanSemaphore : SpeedSemaphore
+internal unsafe sealed class VulkanSemaphore : SpeedSemaphore
 {
     ulong _cachedValue;
     public override ulong Value

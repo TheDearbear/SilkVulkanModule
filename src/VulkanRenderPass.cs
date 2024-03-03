@@ -13,7 +13,7 @@ using VkRenderPass = Silk.NET.Vulkan.RenderPass;
 
 namespace VulkanModule;
 
-internal unsafe class VulkanRenderPass : SpeedRenderPass
+internal unsafe sealed class VulkanRenderPass : SpeedRenderPass
 {
     public override bool Started => _cmd is not null;
 
