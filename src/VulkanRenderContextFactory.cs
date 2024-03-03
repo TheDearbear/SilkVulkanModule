@@ -130,7 +130,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         if (vkVersion < version)
         {
             var factoryLogger = Log.Logger.ForContextShortName<VulkanRenderContextFactory>();
-            factoryLogger.Error("Current system cannot support request Vulkan version ({RequestedVersion}). Supported version: {SupportedVersion}", "1.1", GetVulkanVersion(vkVersion));
+            factoryLogger.Error("Current system cannot support requested version ({RequestedVersion}). Supported version: {SupportedVersion}", GetVulkanVersion(version), GetVulkanVersion(vkVersion));
             (factoryLogger as IDisposable)?.Dispose();
 
             backend = null;
