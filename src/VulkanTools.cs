@@ -117,7 +117,7 @@ internal static class VulkanTools
             TextureLayout.TransferSource => ImageLayout.TransferSrcOptimal,
             TextureLayout.TransferDestination => ImageLayout.TransferDstOptimal,
             TextureLayout.Present => ImageLayout.PresentSrcKhr,
-            _ => throw new ArgumentException($"Unable to get native layout ({layout})")
+            _ => throw new ArgumentException($"Unable to get native layout ({layout})", nameof(layout))
         };
 
     public static PipelineStageFlags GetPipelineStageByLayout(ImageLayout layout)
@@ -129,7 +129,7 @@ internal static class VulkanTools
             ImageLayout.TransferSrcOptimal => PipelineStageFlags.TransferBit,
             ImageLayout.DepthStencilAttachmentOptimal => PipelineStageFlags.EarlyFragmentTestsBit,
             ImageLayout.PresentSrcKhr => PipelineStageFlags.BottomOfPipeBit,
-            _ => throw new ArgumentException($"Unsupported image layout ({layout})")
+            _ => throw new ArgumentException($"Unsupported image layout ({layout})", nameof(layout))
         };
 
     public static AccessFlags GetAccessFlags(ImageLayout layout)
@@ -141,7 +141,7 @@ internal static class VulkanTools
             ImageLayout.TransferSrcOptimal => AccessFlags.TransferReadBit,
             ImageLayout.DepthStencilAttachmentOptimal => AccessFlags.DepthStencilAttachmentReadBit | AccessFlags.DepthStencilAttachmentWriteBit,
             ImageLayout.PresentSrcKhr => AccessFlags.None,
-            _ => throw new ArgumentException($"Unable to find access flags for texture layout ({layout})")
+            _ => throw new ArgumentException($"Unable to find access flags for texture layout ({layout})", nameof(layout))
         };
 
     public static AccessFlags GetAccessFlags(BufferUsageType type)
@@ -152,6 +152,6 @@ internal static class VulkanTools
             BufferUsageType.Vertex => AccessFlags.TransferWriteBit | AccessFlags.VertexAttributeReadBit,
             BufferUsageType.Index => AccessFlags.ShaderWriteBit | AccessFlags.IndexReadBit,
             BufferUsageType.Staging => AccessFlags.TransferReadBit | AccessFlags.TransferWriteBit,
-            _ => throw new ArgumentException($"Unable to find access flags for buffer ({type})")
+            _ => throw new ArgumentException($"Unable to find access flags for buffer ({type})", nameof(type))
         };
 }
