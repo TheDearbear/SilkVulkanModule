@@ -76,7 +76,7 @@ internal unsafe sealed class VulkanSwapchain : Swapchain
             ImageColorSpace = surfaceFormat.ColorSpace,
             // imageExtent will be filled in a copy of this instance in method CreateSwapchainAndFence
             ImageArrayLayers = 1,
-            ImageUsage = ImageUsageFlags.ColorAttachmentBit| ImageUsageFlags.TransferSrcBit| ImageUsageFlags.TransferDstBit,
+            ImageUsage = ImageUsageFlags.ColorAttachmentBit | ImageUsageFlags.TransferSrcBit | ImageUsageFlags.TransferDstBit,
             ImageSharingMode = SharingMode.Exclusive,
             PreTransform = SurfaceTransformFlagsKHR.IdentityBitKhr,
             CompositeAlpha = CompositeAlphaFlagsKHR.OpaqueBitKhr,
