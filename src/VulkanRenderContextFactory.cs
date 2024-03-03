@@ -107,8 +107,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         (factoryLogger as IDisposable)?.Dispose();
 
         var ctx = new VulkanRenderContext(camera, logger, vk);
-        // TODO: Port VulkanRenderer
-        output = new(ctx, null);//new VulkanRenderer(devices[deviceIndex], device, vkSurface, queues, window, ctx));
+        output = new(ctx, new VulkanRenderer(vk, devices[deviceIndex], vkSurface, queues, ctx));
 
         return true;
     }
