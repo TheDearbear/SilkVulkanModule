@@ -51,7 +51,7 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
             var fragment = vkShaders.First(x => x.Type == ShaderType.Fragment);
 
             var shaders = new[] { vertex, fragment };
-            List<GCHandle> handles = new(shaders.Length + 5);
+            List<GCHandle> handles = new(shaders.Length + 6);
 
             _width = info.Viewport.Width;
             _height = info.Viewport.Height;
