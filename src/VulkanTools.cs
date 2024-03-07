@@ -163,4 +163,18 @@ internal static class VulkanTools
             PipelineType.Compute => PipelineBindPoint.Compute,
             _ => throw new ArgumentException($"Unable to determine pipeline type ({type})", nameof(type))
         };
+
+    public static CompareOp Convert(DepthComparator comparator)
+        => comparator switch
+        {
+            DepthComparator.Never => CompareOp.Never,
+            DepthComparator.Less => CompareOp.Less,
+            DepthComparator.LessEqual => CompareOp.LessOrEqual,
+            DepthComparator.Greater => CompareOp.Greater,
+            DepthComparator.GreaterEqual => CompareOp.GreaterOrEqual,
+            DepthComparator.Equal => CompareOp.Equal,
+            DepthComparator.NotEqual => CompareOp.NotEqual,
+            DepthComparator.Always => CompareOp.Always,
+            _ => throw new ArgumentException($"Unable to determine comparator ({comparator})", nameof(comparator))
+        };
 }

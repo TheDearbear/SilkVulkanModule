@@ -126,17 +126,7 @@ internal partial class VulkanPipeline
             DepthTestEnable = info.Depth.EnableDepthTest,
             MinDepthBounds = info.Depth.MinDepth,
             MaxDepthBounds = info.Depth.MaxDepth,
-            DepthCompareOp = info.Depth.Comparator switch
-            {
-                DepthComparator.Never => CompareOp.Never,
-                DepthComparator.Less => CompareOp.Less,
-                DepthComparator.LessEqual => CompareOp.LessOrEqual,
-                DepthComparator.Greater => CompareOp.Greater,
-                DepthComparator.GreaterEqual => CompareOp.GreaterOrEqual,
-                DepthComparator.Equal => CompareOp.Equal,
-                DepthComparator.NotEqual => CompareOp.NotEqual,
-                _ => CompareOp.Always
-            }
+            DepthCompareOp = VulkanTools.Convert(info.Depth.Comparator)
         };
     }
 
