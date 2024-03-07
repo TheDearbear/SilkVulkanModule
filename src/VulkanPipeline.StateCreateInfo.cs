@@ -1,5 +1,4 @@
 ﻿using Silk.NET.Vulkan;
-using Speed.Viewer.Render.Backend;
 using Speed.Viewer.Render.Backend.Pipelines;
 using System;
 using System.Collections.Generic;
@@ -155,22 +154,22 @@ internal partial class VulkanPipeline
         };
     }
 
-    static unsafe PipelineDynamicStateCreateInfo GetDynamicState()
+    static unsafe PipelineDynamicStateCreateInfo GetDynamicState(IList<GCHandle> handles)
     {
-        var states = new DynamicState[]
+        var states = new int[]
         {
-            DynamicState.Viewport,
-            DynamicState.Scissor
+            (int)DynamicState.Viewport,
+            (int)DynamicState.Scissor
         };
 
-        fixed (DynamicState* pStates = states)
+        var handle1 = GCHandle.Alloc(states.ToArray(), GCHandleType.Pinned);
+        handles.Add(handle1);
+
+        return new()
         {
-            return new()
-            {
-                SType = StructureType.PipelineDynamicStateCreateInfo,
-                DynamicStateCount = unchecked((uint)states.Length),
-                PDynamicStates = pStates
-            };
-        }
+            SType = StructureType.PipelineDynamicStateCreateInfo,
+            DynamicStateCount = unchecked((uint)states.Length),
+            PDynamicStates = (DynamicState*)handle1.AddrOfPinnedObject().ToPointer()
+        };
     }
 }

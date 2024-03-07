@@ -64,7 +64,7 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
             var multisampleCreateInfo = GetMultisampleState(info);
             var depthStencilCreateInfo = GetDepthStencilState(info);
             var colorBlendCreateInfo = GetColorBlendState(info, handles);
-            var dynamicCreateInfo = GetDynamicState();
+            var dynamicCreateInfo = GetDynamicState(handles);
 
             fixed (PipelineShaderStageCreateInfo* pStages = shaders.Select(x =>
             {
