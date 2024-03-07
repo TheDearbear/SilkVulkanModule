@@ -1,6 +1,5 @@
 ﻿using Silk.NET.Vulkan;
 using Speed.Engine.Render.Shaders;
-using Speed.Viewer.Render.Backend;
 using Speed.Viewer.Render.Backend.Pipelines;
 using System;
 using System.Collections.Generic;
