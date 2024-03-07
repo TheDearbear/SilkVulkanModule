@@ -59,11 +59,11 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
             var vertexCreateInfo = GetVertexInputState(info, handles);
             var inputAssemblyCreateInfo = GetInputAssemblyState();
             var tessellationCreateInfo = GetTessellationState();
-            var viewportCreateInfo = GetViewportState(info, out var handle3, out var handle4);
+            var viewportCreateInfo = GetViewportState(info, handles);
             var rasterizationCreateInfo = GetRasterizationState();
             var multisampleCreateInfo = GetMultisampleState(info);
             var depthStencilCreateInfo = GetDepthStencilState(info);
-            var colorBlendCreateInfo = GetColorBlendState(info, out var handle5);
+            var colorBlendCreateInfo = GetColorBlendState(info, handles);
             var dynamicCreateInfo = GetDynamicState();
 
             fixed (PipelineShaderStageCreateInfo* pStages = shaders.Select(x =>
@@ -101,10 +101,6 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
                 };
 
                 VulkanTools.Ensure(_vk.CreateGraphicsPipelines(_device, new(), 1, in createInfo, null, out pipeline));
-
-                handle3.Free();
-                handle4.Free();
-                handle5.Free();
             }
 
             foreach (var handle in handles)

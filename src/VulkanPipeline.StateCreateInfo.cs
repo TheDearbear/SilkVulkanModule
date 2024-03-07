@@ -70,13 +70,15 @@ internal partial class VulkanPipeline
         };
     }
 
-    static unsafe PipelineViewportStateCreateInfo GetViewportState(PipelineInfo info, out GCHandle handle1, out GCHandle handle2)
+    static unsafe PipelineViewportStateCreateInfo GetViewportState(PipelineInfo info, IList<GCHandle> handles)
     {
         Viewport viewport = new(0, 0, info.Viewport.Width, info.Viewport.Height, 0, 1);
         Rect2D scissor = new(new(), new(unchecked((uint)info.Viewport.Width), unchecked((uint)info.Viewport.Height)));
 
-        handle1 = GCHandle.Alloc(viewport, GCHandleType.Pinned);
-        handle2 = GCHandle.Alloc(scissor, GCHandleType.Pinned);
+        var handle1 = GCHandle.Alloc(viewport, GCHandleType.Pinned);
+        handles.Add(handle1);
+        var handle2 = GCHandle.Alloc(scissor, GCHandleType.Pinned);
+        handles.Add(handle2);
 
         return new()
         {
@@ -130,7 +132,7 @@ internal partial class VulkanPipeline
         };
     }
 
-    static unsafe PipelineColorBlendStateCreateInfo GetColorBlendState(PipelineInfo info, out GCHandle handle1)
+    static unsafe PipelineColorBlendStateCreateInfo GetColorBlendState(PipelineInfo info, IList<GCHandle> handles)
     {
         var colorBlend = new PipelineColorBlendAttachmentState[info.Color.ColorAttachmentsCount];
         for (int i = 0; i < info.Color.ColorAttachmentsCount; i++)
@@ -142,7 +144,8 @@ internal partial class VulkanPipeline
                 ColorComponentFlags.ABit;
         }
 
-        handle1 = GCHandle.Alloc(colorBlend, GCHandleType.Pinned);
+        var handle1 = GCHandle.Alloc(colorBlend, GCHandleType.Pinned);
+        handles.Add(handle1);
 
         return new()
         {
