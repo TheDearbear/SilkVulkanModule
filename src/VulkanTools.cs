@@ -1,10 +1,12 @@
 ﻿using Serilog;
 using Silk.NET.Vulkan;
+using Speed.Engine.Logging;
 using Speed.Engine.Render.Shaders;
 using Speed.Engine.Textures;
 using Speed.Viewer.Render.Backend;
 using Speed.Viewer.Render.Backend.Pipelines;
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -12,6 +14,8 @@ namespace VulkanModule;
 
 internal static class VulkanTools
 {
+    public const string UnknownString = "*Unknown*";
+
     public static void Ensure(Result result,
         [CallerLineNumber] int cLine = -1,
         [CallerFilePath] string cFile = "",
@@ -22,23 +26,47 @@ internal static class VulkanTools
             return;
         }
 
+        void LogWarning(StringBuilder sb, params object?[] param)
+        {
+            var logger = Log.Logger.ForContextShortName("Vulkan Tools");
+
+            sb.AppendLine()
+                .AppendLine(" - Line: {Expression}")
+                .Append(" - File: {File}");
+
+            var expression = cExpression ?? UnknownString;
+            var file = UnknownString;
+
+            if (!string.IsNullOrEmpty(cFile))
+            {
+                file = cFile;
+                sb.Append(":{Line}");
+            }
+
+            var paramList = new List<object?>(param.Length + 3);
+            paramList.AddRange(param);
+            paramList.Add(expression);
+            paramList.Add(file);
+            paramList.Add(cLine);
+
+            logger.Warning(sb.ToString(), paramList.ToArray());
+
+            (logger as IDisposable)?.Dispose();
+        }
+
         if (result == Result.SuboptimalKhr)
         {
-            var sb = new StringBuilder($"Vulkan call finished with suboptimal result ({result})");
-            sb.AppendLine(" - Line: " + (cExpression ?? "*Unknown*"));
-            sb.Append(" - File: " + (cFile != string.Empty ? $"{cFile}:{cLine}" : "*Unknown*"));
+            var sb = new StringBuilder("Vulkan call finished with suboptimal result ({Result})");
 
-            Log.Warning(sb.ToString());
+            LogWarning(sb, result);
             return;
         }
 
         if (result == Result.Timeout)
         {
-            var sb = new StringBuilder($"Vulkan call finished with timeout ({result})");
-            sb.AppendLine(" - Line: " + (cExpression ?? "*Unknown*"));
-            sb.Append(" - File: " + (cFile != string.Empty ? $"{cFile}:{cLine}" : "*Unknown*"));
+            var sb = new StringBuilder("Vulkan call finished with timeout ({Result})");
 
-            Log.Warning(sb.ToString());
+            LogWarning(sb, result);
             return;
         }
 
