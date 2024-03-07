@@ -150,7 +150,7 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
             {
                 Binding = unchecked((uint)x.Binding),
                 StageFlags = VulkanTools.Convert(x.Stage),
-                DescriptorType = Convert(x.Type),
+                DescriptorType = VulkanTools.Convert(x.Type),
                 DescriptorCount = unchecked((uint)x.Count)
             }).ToArray())
             {
@@ -193,16 +193,4 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
             return layout;
         }
     }
-
-    static DescriptorType Convert(DescriptionType type)
-        => type switch
-        {
-            DescriptionType.Sampler => DescriptorType.Sampler,
-            DescriptionType.SampledImage => DescriptorType.SampledImage,
-            DescriptionType.StorageImage => DescriptorType.StorageImage,
-            DescriptionType.Uniform => DescriptorType.UniformBuffer,
-            DescriptionType.Storage => DescriptorType.StorageImage,
-            DescriptionType.InputAttachment => DescriptorType.InputAttachment,
-            _ => throw new ArgumentException("Received unknown description type", nameof(type))
-        };
 }

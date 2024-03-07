@@ -177,4 +177,16 @@ internal static class VulkanTools
             DepthComparator.Always => CompareOp.Always,
             _ => throw new ArgumentException($"Unable to determine comparator ({comparator})", nameof(comparator))
         };
+
+    public static DescriptorType Convert(DescriptionType type)
+        => type switch
+        {
+            DescriptionType.Sampler => DescriptorType.Sampler,
+            DescriptionType.SampledImage => DescriptorType.SampledImage,
+            DescriptionType.StorageImage => DescriptorType.StorageImage,
+            DescriptionType.Uniform => DescriptorType.UniformBuffer,
+            DescriptionType.Storage => DescriptorType.StorageImage,
+            DescriptionType.InputAttachment => DescriptorType.InputAttachment,
+            _ => throw new ArgumentException("Received unknown description type", nameof(type))
+        };
 }
