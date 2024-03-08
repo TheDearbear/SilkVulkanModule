@@ -19,6 +19,7 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
     public VkPipeline Pipeline { get; }
 
     internal DescriptorSetLayout[] SetLayouts { get; }
+    internal PipelineLayout Layout { get; }
 
     readonly PhysicalDeviceFeatures _features;
     readonly Device _device;
@@ -43,7 +44,8 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
         }
 
         SetLayouts = CreateSetLayouts(info);
-        PipelineLayout layout = CreateLayout(info, SetLayouts);
+        Layout = CreateLayout(info, SetLayouts);
+
         VkPipeline pipeline;
         if (info.Type == PipelineType.Graphics)
         {
@@ -92,7 +94,7 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
                     PDepthStencilState = &depthStencilCreateInfo,
                     PColorBlendState = &colorBlendCreateInfo,
                     PDynamicState = &dynamicCreateInfo,
-                    Layout = layout,
+                    Layout = Layout,
                     RenderPass = vkRenderPass.RenderPass,
                     Subpass = 0
                 };
@@ -122,14 +124,12 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
                         PName = pName,
                         Module = compute.Shader
                     },
-                    Layout = layout
+                    Layout = Layout
                 };
 
                 VulkanTools.Ensure(_vk.CreateComputePipelines(_device, new(), 1, in createInfo, null, out pipeline));
             }
         }
-
-        _vk.DestroyPipelineLayout(_device, layout, null);
 
         Pipeline = pipeline;
     }
@@ -137,6 +137,7 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
     public override void Dispose()
     {
         _vk.DestroyPipeline(_device, Pipeline, null);
+        _vk.DestroyPipelineLayout(_device, Layout, null);
 
         foreach (var layout in SetLayouts)
         {
