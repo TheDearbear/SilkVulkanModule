@@ -18,14 +18,14 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
 {
     public VkPipeline Pipeline { get; }
 
-    int _width, _height;
+    internal DescriptorSetLayout[] SetLayouts { get; }
 
     readonly PhysicalDeviceFeatures _features;
     readonly Device _device;
     readonly Vk _vk;
 
     public VulkanPipeline(Vk vk, PhysicalDeviceFeatures features, PipelineInfo info, SpeedRenderPass renderPass)
-        : base(info.Type, info.Shaders)
+        : base(info)
     {
         _vk = vk;
         _features = features;
@@ -42,7 +42,8 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
             throw new ArgumentException("Some of the shaders belong to different backend", nameof(info));
         }
 
-        PipelineLayout layout = CreateLayout(info);
+        SetLayouts = CreateSetLayouts(info);
+        PipelineLayout layout = CreateLayout(info, SetLayouts);
         VkPipeline pipeline;
         if (info.Type == PipelineType.Graphics)
         {
@@ -51,9 +52,6 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
 
             var shaders = new[] { vertex, fragment };
             List<GCHandle> handles = new(shaders.Length + 6);
-
-            _width = info.Viewport.Width;
-            _height = info.Viewport.Height;
 
             var vertexCreateInfo = GetVertexInputState(info, handles);
             var inputAssemblyCreateInfo = GetInputAssemblyState();
@@ -139,6 +137,11 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
     public override void Dispose()
     {
         _vk.DestroyPipeline(_device, Pipeline, null);
+
+        foreach (var layout in SetLayouts)
+        {
+            _vk.DestroyDescriptorSetLayout(_device, layout, null);
+        }
     }
 
     DescriptorSetLayout[] CreateSetLayouts(PipelineInfo info)
@@ -166,9 +169,8 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
         }).ToArray();
     }
 
-    PipelineLayout CreateLayout(PipelineInfo info)
+    PipelineLayout CreateLayout(PipelineInfo info, DescriptorSetLayout[] setLayouts)
     {
-        var setLayouts = CreateSetLayouts(info);
         fixed (DescriptorSetLayout* pSetLayouts = setLayouts)
         {
             PipelineLayoutCreateInfo createInfo = new()
@@ -183,11 +185,6 @@ internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
             }
 
             VulkanTools.Ensure(_vk.CreatePipelineLayout(_device, in createInfo, null, out var layout));
-            
-            foreach (var descriptor in setLayouts)
-            {
-                _vk.DestroyDescriptorSetLayout(_device, descriptor, null);
-            }
 
             return layout;
         }
