@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Silk.NET.Vulkan" Version="2.20.0-build4214.0" />
-    <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" Version="2.20.0-build4214.0" />
-    <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.20.0-build4214.0" />
-    <PackageReference Include="Silk.NET.Vulkan.Extensions.MVK" Version="2.20.0-build4214.0" />
+    <PackageReference Include="Silk.NET.Vulkan" Version="2.20.0-build4242.0" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.EXT" Version="2.20.0-build4242.0" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.KHR" Version="2.20.0-build4242.0" />
+    <PackageReference Include="Silk.NET.Vulkan.Extensions.MVK" Version="2.20.0-build4242.0" />
   </ItemGroup>
 
   <ItemGroup>
