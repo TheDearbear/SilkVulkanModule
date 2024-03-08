@@ -47,7 +47,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
                 "Expected Vulkan's FourCC ({VulkanFourCC}), got {GivenFourCC}",
                 CharCodes.Vulkan,
                 backend.FourCC == CharCodes.Null ? "*Null*" : backend.FourCC);
-            (factoryLogger as IDisposable)?.Dispose();
 
             output = null;
             return false;
@@ -62,7 +61,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         if (count == 0)
         {
             factoryLogger?.Error("Cannot find any physical devices for using by Vulkan!");
-            (factoryLogger as IDisposable)?.Dispose();
+
             output = null;
             return false;
         }
@@ -106,7 +105,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         vk.GetPhysicalDeviceProperties(devices[deviceIndex], out var props);
         
         factoryLogger?.Debug("Using GPU with name: {GPUName}", VulkanTools.ConvertUTF8(props.DeviceName));
-        (factoryLogger as IDisposable)?.Dispose();
 
         var ctx = new VulkanRenderContext(camera, logger, vk);
         output = new(ctx, new VulkanRenderer(vk, devices[deviceIndex], vkSurface, queues, ctx));
@@ -131,7 +129,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         {
             var factoryLogger = Log.Logger.ForContextShortName<VulkanRenderContextFactory>();
             factoryLogger.Error("Current system cannot support requested version ({RequestedVersion}). Supported version: {SupportedVersion}", GetVulkanVersion(version), GetVulkanVersion(vkVersion));
-            (factoryLogger as IDisposable)?.Dispose();
 
             backend = null;
             return false;
@@ -252,8 +249,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
             {
                 logger.Error("Unable to find present queue family index!");
             }
-
-            (logger as IDisposable)?.Dispose();
         }
 
         return new()
@@ -342,8 +337,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         GCHandle arrayHandle = GCHandle.Alloc(pExtensions, GCHandleType.Pinned);
         handles.Add(arrayHandle);
 
-        (logger as IDisposable)?.Dispose();
-
         return new(unchecked((uint)extensions.Length), arrayHandle.AddrOfPinnedObject());
     }
 
@@ -379,8 +372,6 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 
             pExtensions[i++] = handle.AddrOfPinnedObject();
         }
-
-        (logger as IDisposable)?.Dispose();
 
         GCHandle arrayHandle = GCHandle.Alloc(pExtensions, GCHandleType.Pinned);
         handles.Add(arrayHandle);

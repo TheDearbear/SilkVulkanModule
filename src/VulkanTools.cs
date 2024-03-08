@@ -50,8 +50,6 @@ internal static class VulkanTools
             paramList.Add(cLine);
 
             logger.Warning(sb.ToString(), paramList.ToArray());
-
-            (logger as IDisposable)?.Dispose();
         }
 
         if (result == Result.SuboptimalKhr)
