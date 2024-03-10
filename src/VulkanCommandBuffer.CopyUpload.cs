@@ -124,7 +124,7 @@ internal unsafe partial class VulkanCommandBuffer
         throw new NotImplementedException();
     }
 
-    public override unsafe void Upload<T>(DeviceBuffer dst, uint dstSize, uint dstOffset, T[] src, uint srcSize, uint srcOffset)
+    public override void Upload<T>(DeviceBuffer dst, uint dstSize, uint dstOffset, T[] src, uint srcSize, uint srcOffset)
     {
         var stride = sizeof(T);
 
@@ -146,15 +146,15 @@ internal unsafe partial class VulkanCommandBuffer
         var buffer = _factory.CreateDeviceBuffer(unchecked((int)srcSize), BufferUsageType.Staging);
         var memory = buffer.MapToHost(BufferMapType.TwoWay, srcSize, dstOffset);
 
-        unsafe
+        fixed (T* pSrc = src)
         {
-            fixed (T* pSrc = src)
-            {
-                Unsafe.CopyBlock(memory.Data.ToPointer(), pSrc, srcSize);
-            }
+            Unsafe.CopyBlock(memory.Data.ToPointer(), pSrc, srcSize);
         }
 
         buffer.UnMap(memory);
+        
+        Copy(buffer, srcSize, srcOffset, dst, dstSize, dstOffset);
+        
         DisposeQueue.Add(buffer);
     }
 }
