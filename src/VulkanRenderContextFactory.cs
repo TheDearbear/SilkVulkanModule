@@ -17,7 +17,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContextFactory
 {

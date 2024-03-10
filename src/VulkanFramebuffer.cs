@@ -8,7 +8,7 @@ using SpeedFramebuffer = Speed.Viewer.Render.Backend.Framebuffer;
 
 using VkFramebuffer = Silk.NET.Vulkan.Framebuffer;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal sealed unsafe class VulkanFramebuffer : SpeedFramebuffer
 {

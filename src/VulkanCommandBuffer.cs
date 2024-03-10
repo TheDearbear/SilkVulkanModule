@@ -15,7 +15,7 @@ using VkBuffer = Silk.NET.Vulkan.Buffer;
 using VkCommandBuffer = Silk.NET.Vulkan.CommandBuffer;
 using VkIndexType = Silk.NET.Vulkan.IndexType;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 {

@@ -1,4 +1,4 @@
-﻿namespace VulkanModule;
+﻿namespace SilkVulkanModule;
 
 internal struct GraphicsPresentIndexPair
 {

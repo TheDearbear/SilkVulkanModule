@@ -13,7 +13,7 @@ using SpeedRenderPass = Speed.Viewer.Render.Backend.RenderPass;
 
 using VkCommandBuffer = Silk.NET.Vulkan.CommandBuffer;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed class VulkanBackendFactory : IBackendFactory
 {

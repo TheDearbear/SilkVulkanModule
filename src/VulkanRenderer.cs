@@ -12,7 +12,7 @@ using SpeedFramebuffer = Speed.Viewer.Render.Backend.Framebuffer;
 using VkCommandBuffer = Silk.NET.Vulkan.CommandBuffer;
 using VkSemaphore = Silk.NET.Vulkan.Semaphore;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal sealed class VulkanRenderer : IRenderer
 {

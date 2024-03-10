@@ -4,7 +4,7 @@ using System;
 
 using VkBuffer = Silk.NET.Vulkan.Buffer;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed class VulkanDeviceBuffer : DeviceBuffer
 {

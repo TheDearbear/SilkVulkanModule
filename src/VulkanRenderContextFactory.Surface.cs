@@ -7,7 +7,7 @@ using Speed.Viewer.Windowing;
 using System;
 using System.Diagnostics;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed partial class VulkanRenderContextFactory
 {

@@ -1,7 +1,7 @@
 ﻿using Speed.Viewer.Modules;
 using Speed.Viewer.Render;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 public sealed class VulkanModule : Module
 {

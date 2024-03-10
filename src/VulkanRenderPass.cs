@@ -11,7 +11,7 @@ using SpeedRenderPass = Speed.Viewer.Render.Backend.RenderPass;
 using VkAttachmentDescription = Silk.NET.Vulkan.AttachmentDescription;
 using VkRenderPass = Silk.NET.Vulkan.RenderPass;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed class VulkanRenderPass : SpeedRenderPass
 {

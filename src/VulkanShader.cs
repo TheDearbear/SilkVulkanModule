@@ -2,7 +2,7 @@
 using Speed.Engine.Render.Shaders;
 using System;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed class VulkanShader : Shader
 {

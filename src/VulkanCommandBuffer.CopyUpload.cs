@@ -4,7 +4,7 @@ using Speed.Viewer.Render.Backend;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe partial class VulkanCommandBuffer
 {

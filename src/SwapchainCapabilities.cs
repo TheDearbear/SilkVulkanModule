@@ -1,7 +1,7 @@
 ﻿using Silk.NET.Vulkan;
 using System;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal struct SwapchainCapabilities
 {

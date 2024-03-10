@@ -7,7 +7,7 @@ using System.Linq;
 using SpeedFramebuffer = Speed.Viewer.Render.Backend.Framebuffer;
 using SpeedRenderPass = Speed.Viewer.Render.Backend.RenderPass;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed class VulkanSwapchain : Swapchain
 {

@@ -2,7 +2,7 @@
 using Speed.Viewer.Render.Backend;
 using System;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe partial class VulkanTexture
 {

@@ -12,7 +12,7 @@ using SpeedRenderPass = Speed.Viewer.Render.Backend.RenderPass;
 
 using VkPipeline = Silk.NET.Vulkan.Pipeline;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed partial class VulkanPipeline : SpeedPipeline
 {

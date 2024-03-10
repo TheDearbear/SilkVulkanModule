@@ -5,7 +5,7 @@ using SpeedSemaphore = Speed.Viewer.Render.Backend.Semaphore;
 
 using VkSemaphore = Silk.NET.Vulkan.Semaphore;
 
-namespace VulkanModule;
+namespace SilkVulkanModule;
 
 internal unsafe sealed class VulkanSemaphore : SpeedSemaphore
 {
