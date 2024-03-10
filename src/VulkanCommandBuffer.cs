@@ -199,7 +199,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 
         if (slot < 0)
         {
-            throw new ArgumentException("Passed negative binding slot!");
+            throw new ArgumentException("Passed negative binding slot!", nameof(slot));
         }
 
         ulong offset = 0;
@@ -209,12 +209,12 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
         {
             if (buffer.Usage != BufferUsageType.Vertex)
             {
-                throw new ArgumentException("Device buffer must be created for vertex use!");
+                throw new ArgumentException("Device buffer must be created for vertex use!", nameof(buffer));
             }
 
             if (buffer is not VulkanDeviceBuffer vkDeviceBuffer)
             {
-                throw new ArgumentException("Device buffer belongs to different backend!");
+                throw new ArgumentException("Device buffer belongs to different backend!", nameof(buffer));
             }
 
             vkBuffer = vkDeviceBuffer.Buffer;
@@ -232,12 +232,12 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 
         if (buffer.Usage != BufferUsageType.Index)
         {
-            throw new ArgumentException("Device buffer must be created for index use!");
+            throw new ArgumentException("Device buffer must be created for index use!", nameof(buffer));
         }
 
         if (buffer is not VulkanDeviceBuffer vkDeviceBuffer)
         {
-            throw new ArgumentException("Device buffer belongs to different backend!");
+            throw new ArgumentException("Device buffer belongs to different backend!", nameof(buffer));
         }
 
         _vk.CmdBindIndexBuffer(CommandBuffer, vkDeviceBuffer.Buffer, 0, type == SpeedIndexType.UInt16 ? VkIndexType.Uint16 : VkIndexType.Uint32);
