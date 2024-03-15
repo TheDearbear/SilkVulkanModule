@@ -32,13 +32,21 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
         }
     }
 
+    ValueTuple<int, int>? _renderSize;
+    public override ValueTuple<int, int>? RenderSize {
+        get => _renderSize;
+        set
+        {
+            _renderSize = value;
+            UpdateRenderSize();
+        }
+    }
+
     internal VkCommandBuffer CommandBuffer { get; }
     internal VulkanSemaphore Semaphore { get; }
 
     internal List<DeviceBuffer> DisposeQueue { get; } = new(5);
 
-    ValueTuple<int, int>? _size;
-    
     readonly IBackendFactory _factory;
     readonly CommandPool _pool;
     readonly Device _device;
@@ -62,7 +70,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
         Semaphore = new(_vk);
     }
 
-    public override bool Begin(ValueTuple<int, int>? renderSize)
+    public override bool Begin()
     {
         if (Recording)
         {
@@ -76,7 +84,6 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
         };
 
         VulkanTools.Ensure(_vk.BeginCommandBuffer(CommandBuffer, in beginInfo));
-        _size = renderSize;
 
         return Recording = true;
     }
@@ -89,8 +96,8 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
         }
 
         VulkanTools.Ensure(_vk.EndCommandBuffer(CommandBuffer));
+        RenderSize = null;
         Recording = false;
-        _size = null;
         return true;
     }
 
@@ -275,6 +282,11 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 
     void UpdatePipeline()
     {
+        if (!Recording)
+        {
+            throw new InvalidOperationException("This action can be performed only while recording!");
+        }
+
         if (CurrentPipeline is not VulkanPipeline vkPipeline)
         {
             throw new InvalidOperationException("Provided pipeline is null or belongs to different backend!");
@@ -284,18 +296,35 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 
         if (vkPipeline.Type == PipelineType.Graphics)
         {
-            if (_size is null)
+            if (RenderSize is null)
             {
                 throw new InvalidOperationException("Command buffer must be started with render size for binding graphics pipeline!");
             }
 
-            var scissor = new Rect2D(new(), new(unchecked((uint)_size.Value.Item1), unchecked((uint)_size.Value.Item2)));
-            var viewport = new Viewport(0, 0, _size.Value.Item1, _size.Value.Item2, 0, 1);
-
-            _vk.CmdSetViewport(CommandBuffer, 0, 1, &viewport);
-            _vk.CmdSetScissor(CommandBuffer, 0, 1, &scissor);
+            UpdateRenderSize();
         }
         
         _vk.CmdBindPipeline(CommandBuffer, bindPoint, vkPipeline.Pipeline);
     }
+
+    void UpdateRenderSize()
+    {
+        if (!Recording)
+        {
+            throw new InvalidOperationException("This action can be performed only while recording!");
+        }
+
+        if (!RenderSize.HasValue)
+        {
+            return;
+        }
+
+        var size = RenderSize.Value;
+
+        var scissor = new Rect2D(new(), new(unchecked((uint)size.Item1), unchecked((uint)size.Item2)));
+        var viewport = new Viewport(0, 0, size.Item1, size.Item2, 0, 1);
+
+            _vk.CmdSetViewport(CommandBuffer, 0, 1, &viewport);
+            _vk.CmdSetScissor(CommandBuffer, 0, 1, &scissor);
+        }
 }

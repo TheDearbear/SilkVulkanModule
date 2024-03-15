@@ -113,7 +113,7 @@ internal sealed class VulkanRenderer : IRenderer
             pCmd[i] = vkCmd.CommandBuffer;
         }
 
-        _cmd.Begin(null);
+        _cmd.Begin();
         var withFramebuffer = buffers.Select(x => x.CurrentFramebuffer).OfType<SpeedFramebuffer>().ToArray();
         ImageMemoryBarrier* pBarriers = stackalloc ImageMemoryBarrier[withFramebuffer.Length];
         
