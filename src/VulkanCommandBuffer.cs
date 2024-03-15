@@ -324,7 +324,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
         var scissor = new Rect2D(new(), new(unchecked((uint)size.Item1), unchecked((uint)size.Item2)));
         var viewport = new Viewport(0, 0, size.Item1, size.Item2, 0, 1);
 
-            _vk.CmdSetViewport(CommandBuffer, 0, 1, &viewport);
-            _vk.CmdSetScissor(CommandBuffer, 0, 1, &scissor);
+        _vk.CmdSetViewport(CommandBuffer, 0, 1, &viewport);
+        _vk.CmdSetScissor(CommandBuffer, 0, 1, &scissor);
     }
 }
