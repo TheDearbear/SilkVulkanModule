@@ -326,5 +326,5 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 
             _vk.CmdSetViewport(CommandBuffer, 0, 1, &viewport);
             _vk.CmdSetScissor(CommandBuffer, 0, 1, &scissor);
-        }
+    }
 }
