@@ -100,29 +100,14 @@ internal unsafe partial class VulkanCommandBuffer
             0, null);
     }
 
-    public override void Copy(DeviceBuffer dst, Texture src)
-    {
-        throw new NotImplementedException();
-    }
-
     public override void Copy(Texture dst, uint dstX, uint dstY, uint dstWidth, uint dstHeight,
         DeviceBuffer src, uint srcRowLength, uint srcHeight, uint srcByteOffset)
     {
         throw new NotImplementedException();
     }
 
-    public override void Copy(Texture dst, DeviceBuffer src)
-    {
-        throw new NotImplementedException();
-    }
-
     public override void Copy(DeviceBuffer dst, uint dstRowLength, uint dstHeight, uint dstByteOffset,
         Texture src, uint srcX, uint srcY, uint srcWidth, uint srcHeight)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void Upload<T>(Texture dst, T[] src)
     {
         throw new NotImplementedException();
     }
