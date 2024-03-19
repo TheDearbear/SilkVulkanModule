@@ -163,7 +163,7 @@ internal unsafe partial class VulkanCommandBuffer
 
         buffer.UnMap(memory);
         
-        Copy(buffer, srcByteSize, srcByteOffset, dst, dstByteSize, dstByteOffset);
+        Copy(dst, dstByteSize, dstByteOffset, buffer, srcByteSize, srcByteOffset);
         
         DisposeQueue.Add(buffer);
     }
