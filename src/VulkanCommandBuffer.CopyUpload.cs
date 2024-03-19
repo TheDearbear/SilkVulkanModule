@@ -8,34 +8,31 @@ namespace SilkVulkanModule;
 
 internal unsafe partial class VulkanCommandBuffer
 {
-    public override void Copy(Texture src, Texture dst)
+    public override void Copy(Texture dst, uint dstX, uint dstY, uint dstWidth, uint dstHeight,
+        Texture src, uint srcX, uint srcY, uint srcWidth, uint srcHeight)
     {
         throw new NotImplementedException();
     }
 
-    public override void Copy(Texture src, uint srcSize, uint srcOffset, Texture dst, uint dstSize, uint dstOffset)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override void Copy(DeviceBuffer src, uint srcSize, uint srcOffset, DeviceBuffer dst, uint dstSize, uint dstOffset)
+    public override void Copy(DeviceBuffer dst, uint dstByteSize, uint dstByteOffset,
+        DeviceBuffer src, uint srcByteSize, uint srcByteOffset)
     {
         if (!Recording)
         {
             throw new InvalidOperationException("This action can be performed only while recording!");
         }
 
-        if (src.Size < srcSize + srcOffset)
+        if (src.Size < srcByteSize + srcByteOffset)
         {
             throw new ArgumentException($"Provided out of bounds borders for source buffer!");
         }
 
-        if (dst.Size < dstSize + dstOffset)
+        if (dst.Size < dstByteSize + dstByteOffset)
         {
             throw new ArgumentException($"Provided out of bounds borders for destination buffer!");
         }
 
-        if (srcSize > dstSize)
+        if (srcByteSize > dstByteSize)
         {
             throw new ArgumentException("Source size is bigger than destination size!");
         }
@@ -50,7 +47,7 @@ internal unsafe partial class VulkanCommandBuffer
             throw new ArgumentException("Destination device buffer belongs to different backend!");
         }
 
-        var bufferCopy = new BufferCopy(srcOffset, dstOffset, srcSize);
+        var bufferCopy = new BufferCopy(srcByteOffset, dstByteOffset, srcByteSize);
 
         _vk.CmdCopyBuffer(CommandBuffer, vkSrcBuffer.Buffer, vkDstBuffer.Buffer, 1, in bufferCopy);
 
@@ -94,22 +91,24 @@ internal unsafe partial class VulkanCommandBuffer
             0, null);
     }
 
-    public override void Copy(DeviceBuffer src, Texture dst)
+    public override void Copy(DeviceBuffer dst, Texture src)
     {
         throw new NotImplementedException();
     }
 
-    public override void Copy(DeviceBuffer src, uint srcSize, uint srcOffset, Texture dst, uint dstSize, uint dstOffset)
+    public override void Copy(Texture dst, uint dstX, uint dstY, uint dstWidth, uint dstHeight,
+        DeviceBuffer src, uint srcRowLength, uint srcHeight, uint srcByteOffset)
     {
         throw new NotImplementedException();
     }
 
-    public override void Copy(Texture src, DeviceBuffer dst)
+    public override void Copy(Texture dst, DeviceBuffer src)
     {
         throw new NotImplementedException();
     }
 
-    public override void Copy(Texture src, uint srcSize, uint srcOffset, DeviceBuffer dst, uint dstSize, uint dstOffset)
+    public override void Copy(DeviceBuffer dst, uint dstRowLength, uint dstHeight, uint dstByteOffset,
+        Texture src, uint srcX, uint srcY, uint srcWidth, uint srcHeight)
     {
         throw new NotImplementedException();
     }
@@ -119,41 +118,43 @@ internal unsafe partial class VulkanCommandBuffer
         throw new NotImplementedException();
     }
 
-    public override void Upload<T>(Texture dst, uint dstSize, uint dstOffset, T[] src, uint srcSize, uint srcOffset)
+    public override void Upload<T>(Texture dst, uint dstX, uint dstY, uint dstWidth, uint dstHeight,
+        T[] src, uint srcRowLength, uint srcHeight, uint srcByteOffset)
     {
         throw new NotImplementedException();
     }
 
-    public override void Upload<T>(DeviceBuffer dst, uint dstSize, uint dstOffset, T[] src, uint srcSize, uint srcOffset)
+    public override void Upload<T>(DeviceBuffer dst, uint dstByteSize, uint dstByteOffset,
+        T[] src, uint srcByteSize, uint srcByteOffset)
     {
         var stride = sizeof(T);
 
-        if (dst.Size < dstSize + dstOffset)
+        if (dst.Size < dstByteSize + dstByteOffset)
         {
             throw new ArgumentException($"Provided out of bounds borders for destination buffer!");
         }
 
-        if (src.Length * stride < srcSize + srcOffset)
+        if (src.Length * stride < srcByteSize + srcByteOffset)
         {
             throw new ArgumentException($"Provided out of bounds borders for source array!");
         }
 
-        if (srcSize > dstSize)
+        if (srcByteSize > dstByteSize)
         {
             throw new ArgumentException("Source size is bigger than destination size!");
         }
 
-        var buffer = _factory.CreateDeviceBuffer(unchecked((int)srcSize), BufferUsageType.Staging);
-        var memory = buffer.MapToHost(BufferMapType.TwoWay, srcSize, dstOffset);
+        var buffer = _factory.CreateDeviceBuffer(unchecked((int)srcByteSize), BufferUsageType.Staging);
+        var memory = buffer.MapToHost(BufferMapType.TwoWay, srcByteSize, dstByteOffset);
 
         fixed (T* pSrc = src)
         {
-            Unsafe.CopyBlock(memory.Data.ToPointer(), pSrc, srcSize);
+            Unsafe.CopyBlock(memory.Data.ToPointer(), pSrc, srcByteSize);
         }
 
         buffer.UnMap(memory);
         
-        Copy(buffer, srcSize, srcOffset, dst, dstSize, dstOffset);
+        Copy(buffer, srcByteSize, srcByteOffset, dst, dstByteSize, dstByteOffset);
         
         DisposeQueue.Add(buffer);
     }
