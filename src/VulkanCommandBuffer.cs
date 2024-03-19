@@ -19,6 +19,9 @@ namespace SilkVulkanModule;
 
 internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 {
+    const string DifferentBackendError = "Object belongs to different backend!";
+    const string RecordingError = "This action can be performed only while recording!";
+
     public override SpeedFramebuffer? CurrentFramebuffer { get; set; }
 
     SpeedPipeline? _pipeline;
@@ -117,7 +120,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
     {
         if (!Recording)
         {
-            throw new InvalidOperationException("This action can be performed only while recording!");
+            throw new InvalidOperationException(RecordingError);
         }
 
         if (CurrentFramebuffer is null)
@@ -159,7 +162,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
     {
         if (!Recording)
         {
-            throw new InvalidOperationException("This action can be performed only while recording!");
+            throw new InvalidOperationException(RecordingError);
         }
 
         if (CurrentFramebuffer is null)
@@ -201,7 +204,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
     {
         if (!Recording)
         {
-            throw new InvalidOperationException("This action can be performed only while recording!");
+            throw new InvalidOperationException(RecordingError);
         }
 
         if (slot < 0)
@@ -221,7 +224,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 
             if (buffer is not VulkanDeviceBuffer vkDeviceBuffer)
             {
-                throw new ArgumentException("Device buffer belongs to different backend!", nameof(buffer));
+                throw new ArgumentException(DifferentBackendError, nameof(buffer));
             }
 
             vkBuffer = vkDeviceBuffer.Buffer;
@@ -234,7 +237,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
     {
         if (!Recording)
         {
-            throw new InvalidOperationException("This action can be performed only while recording!");
+            throw new InvalidOperationException(RecordingError);
         }
 
         if (buffer.Usage != BufferUsageType.Index)
@@ -244,7 +247,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 
         if (buffer is not VulkanDeviceBuffer vkDeviceBuffer)
         {
-            throw new ArgumentException("Device buffer belongs to different backend!", nameof(buffer));
+            throw new ArgumentException(DifferentBackendError, nameof(buffer));
         }
 
         _vk.CmdBindIndexBuffer(CommandBuffer, vkDeviceBuffer.Buffer, 0, type == SpeedIndexType.UInt16 ? VkIndexType.Uint16 : VkIndexType.Uint32);
@@ -284,7 +287,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
     {
         if (!Recording)
         {
-            throw new InvalidOperationException("This action can be performed only while recording!");
+            throw new InvalidOperationException(RecordingError);
         }
 
         if (CurrentPipeline is not VulkanPipeline vkPipeline)
@@ -311,7 +314,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
     {
         if (!Recording)
         {
-            throw new InvalidOperationException("This action can be performed only while recording!");
+            throw new InvalidOperationException(RecordingError);
         }
 
         if (!RenderSize.HasValue)

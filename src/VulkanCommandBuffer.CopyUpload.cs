@@ -8,6 +8,15 @@ namespace SilkVulkanModule;
 
 internal unsafe partial class VulkanCommandBuffer
 {
+    const string OOBSourceArrayError = "Provided out of bounds borders for source array!";
+
+    const string OOBSourceBufferError = "Provided out of bounds borders for source buffer!";
+    const string OOBDestinationBufferError = "Provided out of bounds borders for destination buffer!";
+
+    const string OOBDestinationTextureError = "Provided out of bounds borders for destination texture!";
+
+    const string OversizeError = "Source size is bigger than destination size!";
+
     public override void Copy(Texture dst, uint dstX, uint dstY, uint dstWidth, uint dstHeight,
         Texture src, uint srcX, uint srcY, uint srcWidth, uint srcHeight)
     {
@@ -19,32 +28,32 @@ internal unsafe partial class VulkanCommandBuffer
     {
         if (!Recording)
         {
-            throw new InvalidOperationException("This action can be performed only while recording!");
+            throw new InvalidOperationException(RecordingError);
         }
 
         if (src.Size < srcByteSize + srcByteOffset)
         {
-            throw new ArgumentException($"Provided out of bounds borders for source buffer!");
+            throw new ArgumentException(OOBSourceBufferError);
         }
 
         if (dst.Size < dstByteSize + dstByteOffset)
         {
-            throw new ArgumentException($"Provided out of bounds borders for destination buffer!");
+            throw new ArgumentException(OOBDestinationBufferError);
         }
 
         if (srcByteSize > dstByteSize)
         {
-            throw new ArgumentException("Source size is bigger than destination size!");
+            throw new ArgumentException(OversizeError);
         }
 
         if (src is not VulkanDeviceBuffer vkSrcBuffer)
         {
-            throw new ArgumentException("Source device buffer belongs to different backend!");
+            throw new ArgumentException(DifferentBackendError, nameof(src));
         }
 
         if (dst is not VulkanDeviceBuffer vkDstBuffer)
         {
-            throw new ArgumentException("Destination device buffer belongs to different backend!");
+            throw new ArgumentException(DifferentBackendError, nameof(dst));
         }
 
         var bufferCopy = new BufferCopy(srcByteOffset, dstByteOffset, srcByteSize);
@@ -131,17 +140,17 @@ internal unsafe partial class VulkanCommandBuffer
 
         if (dst.Size < dstByteSize + dstByteOffset)
         {
-            throw new ArgumentException($"Provided out of bounds borders for destination buffer!");
+            throw new ArgumentException(OOBDestinationBufferError);
         }
 
         if (src.Length * stride < srcByteSize + srcByteOffset)
         {
-            throw new ArgumentException($"Provided out of bounds borders for source array!");
+            throw new ArgumentException(OOBSourceArrayError);
         }
 
         if (srcByteSize > dstByteSize)
         {
-            throw new ArgumentException("Source size is bigger than destination size!");
+            throw new ArgumentException(OversizeError);
         }
 
         var buffer = _factory.CreateDeviceBuffer(unchecked((int)srcByteSize), BufferUsageType.Staging);
