@@ -110,7 +110,7 @@ internal unsafe sealed class VulkanSwapchain : Swapchain
             framebuffer.Dispose();
         }
 
-        _framebuffers = Array.Empty<SpeedFramebuffer>();
+        _framebuffers = [];
     }
 
     public override void Resize(int width, int height)
@@ -204,7 +204,7 @@ internal unsafe sealed class VulkanSwapchain : Swapchain
 
             var texture = new VulkanTexture(_vk, images[i], view, info);
 
-            _framebuffers[i] = new VulkanFramebuffer(_vk, Width, Height, new[] { texture }, _renderPass);
+            _framebuffers[i] = new VulkanFramebuffer(_vk, Width, Height, [texture], _renderPass);
         }
     }
 

@@ -1,5 +1,4 @@
 ﻿using Silk.NET.Vulkan;
-using System;
 
 namespace SilkVulkanModule;
 
@@ -12,8 +11,8 @@ internal struct SwapchainCapabilities
 	public SwapchainCapabilities()
 	{
 		SurfaceCapabilities = default;
-		SupportedSurfaceFormats = Array.Empty<SurfaceFormatKHR>();
-		SupportedPresentModes = Array.Empty<PresentModeKHR>();
+		SupportedSurfaceFormats = [];
+		SupportedPresentModes = [];
 	}
 
 	public SwapchainCapabilities(SurfaceCapabilitiesKHR surfaceCapabilities,

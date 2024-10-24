@@ -24,7 +24,7 @@ internal sealed class VulkanRenderer : IRenderer
 
     public bool RenderPassSupported { get; } = true;
 
-    readonly Dictionary<VkCommandBuffer, Fence> _submitFences = new();
+    readonly Dictionary<VkCommandBuffer, Fence> _submitFences = [];
 
     readonly VulkanCommandBuffer _cmd;
     readonly GraphicsPresentIndexPair _gpIndex;

@@ -20,7 +20,7 @@ namespace SilkVulkanModule;
 
 internal unsafe sealed class VulkanRenderContext : IRenderContext
 {
-    readonly List<IRenderRegion> _regions = new();
+    readonly List<IRenderRegion> _regions = [];
     public IEnumerable<IRenderRegion> Regions => _regions;
 
     public ICamera RenderCamera { get; set; }
@@ -181,40 +181,29 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
 
     void TestDebugMessenger()
     {
-        byte* msgIdName = stackalloc byte[11]
-        {
-            0x44, 0x65, 0x62, 0x75, 0x67, 0x20, 0x74, 0x65, 0x73, 0x74,
-            0x00
-        };
-
-        byte* testMsg = stackalloc byte[41]
-        {
-            0x54, 0x68, 0x69, 0x73, 0x20, 0x69, 0x73, 0x20, 0x61, 0x20,
-            0x74, 0x65, 0x73, 0x74, 0x20, 0x6D, 0x65, 0x73, 0x73, 0x61,
-            0x67, 0x65, 0x20, 0x66, 0x6F, 0x72, 0x20, 0x64, 0x65, 0x62,
-            0x75, 0x67, 0x20, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6D, 0x2E,
-            0x00
-        };
-
         DebugUtilsObjectNameInfoEXT obj = new()
         {
             SType = StructureType.DebugUtilsObjectNameInfoExt,
             ObjectType = ObjectType.Unknown
         };
 
-        DebugUtilsMessengerCallbackDataEXT callbackData = new()
+        fixed (byte* msgIdName = "Debug test\0"u8)
+        fixed (byte* testMsg = "This is a test message for debug system.\0"u8)
         {
-            SType = StructureType.DebugUtilsMessengerCallbackDataExt,
-            PMessageIdName = msgIdName,
-            MessageIdNumber = 1337,
-            PMessage = testMsg,
-            QueueLabelCount = 0,
-            CmdBufLabelCount = 0,
-            ObjectCount = 1,
-            PObjects = &obj
-        };
+            DebugUtilsMessengerCallbackDataEXT callbackData = new()
+            {
+                SType = StructureType.DebugUtilsMessengerCallbackDataExt,
+                PMessageIdName = msgIdName,
+                MessageIdNumber = 1337,
+                PMessage = testMsg,
+                QueueLabelCount = 0,
+                CmdBufLabelCount = 0,
+                ObjectCount = 1,
+                PObjects = &obj
+            };
 
-        _debugUtils.SubmitDebugUtilsMessage(_instance, DebugUtilsMessageSeverityFlagsEXT.InfoBitExt, DebugUtilsMessageTypeFlagsEXT.GeneralBitExt, &callbackData);
+            _debugUtils.SubmitDebugUtilsMessage(_instance, DebugUtilsMessageSeverityFlagsEXT.InfoBitExt, DebugUtilsMessageTypeFlagsEXT.GeneralBitExt, &callbackData);
+        }
     }
 #if DEBUG
 

@@ -9,7 +9,7 @@ namespace SilkVulkanModule;
 
 internal partial class VulkanPipeline
 {
-    static unsafe PipelineVertexInputStateCreateInfo GetVertexInputState(PipelineInfo info, IList<GCHandle> handles)
+    static unsafe PipelineVertexInputStateCreateInfo GetVertexInputState(PipelineInfo info, List<GCHandle> handles)
     {
         var bindingDescriptions = info.Vertex.Bindings.Select(x => new VertexInputBindingDescription()
         {
@@ -69,7 +69,7 @@ internal partial class VulkanPipeline
         };
     }
 
-    static unsafe PipelineViewportStateCreateInfo GetViewportState(PipelineInfo info, IList<GCHandle> handles)
+    static unsafe PipelineViewportStateCreateInfo GetViewportState(PipelineInfo info, List<GCHandle> handles)
     {
         Viewport viewport = new(0, 0, info.Viewport.Width, info.Viewport.Height, 0, 1);
         Rect2D scissor = new(new(), new(unchecked((uint)info.Viewport.Width), unchecked((uint)info.Viewport.Height)));
@@ -131,7 +131,7 @@ internal partial class VulkanPipeline
         };
     }
 
-    static unsafe PipelineColorBlendStateCreateInfo GetColorBlendState(PipelineInfo info, IList<GCHandle> handles)
+    static unsafe PipelineColorBlendStateCreateInfo GetColorBlendState(PipelineInfo info, List<GCHandle> handles)
     {
         var colorBlend = new PipelineColorBlendAttachmentState[info.Color.ColorAttachmentsCount];
         for (int i = 0; i < info.Color.ColorAttachmentsCount; i++)
@@ -154,7 +154,7 @@ internal partial class VulkanPipeline
         };
     }
 
-    static unsafe PipelineDynamicStateCreateInfo GetDynamicState(IList<GCHandle> handles)
+    static unsafe PipelineDynamicStateCreateInfo GetDynamicState(List<GCHandle> handles)
     {
         var states = new int[]
         {

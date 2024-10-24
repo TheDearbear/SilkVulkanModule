@@ -21,18 +21,18 @@ namespace SilkVulkanModule;
 
 internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContextFactory
 {
-    public string[]? SupportedBackends { get; } = new[] { "Vulkan" };
+    public string[]? SupportedBackends { get; } = ["Vulkan"];
 
-    readonly static string[] _deviceExtensions = new[]
-    {
+    readonly static string[] _deviceExtensions =
+    [
         KhrSwapchain.ExtensionName,
         KhrTimelineSemaphore.ExtensionName,
-    };
+    ];
 
-    readonly static string[] _instanceExtensions = new[]
-    {
+    readonly static string[] _instanceExtensions =
+    [
         ExtDebugUtils.ExtensionName
-    };
+    ];
 
     const string ENGINE_NAME = "Speed Engine";
     const string APPLICATION_NAME = "Speed Viewer";
@@ -258,19 +258,19 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         };
     }
 
-    static DeviceQueueCreateInfo[] GenerateDeviceQueueCreateInfoArray(Vk vk, PhysicalDevice physicalDevice, SurfaceKHR surface, IList<GCHandle> handles, out GraphicsPresentIndexPair pair)
+    static DeviceQueueCreateInfo[] GenerateDeviceQueueCreateInfoArray(Vk vk, PhysicalDevice physicalDevice, SurfaceKHR surface, List<GCHandle> handles, out GraphicsPresentIndexPair pair)
     {
         pair = GetQueueFamilyIndex(vk, physicalDevice, surface);
         
-        float[] priorities = new[] { 1f, 1f };
+        float[] priorities = [1, 1];
         GCHandle handle = GCHandle.Alloc(priorities, GCHandleType.Pinned);
         handles.Add(handle);
         float* pPriorities = (float*)handle.AddrOfPinnedObject().ToPointer();
 
         if (pair.GraphicsFamilyIndex == pair.PresentFamilyIndex)
         {
-            return new[]
-            {
+            return
+            [
                 new DeviceQueueCreateInfo
                 {
                     SType = StructureType.DeviceQueueCreateInfo,
@@ -278,11 +278,11 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
                     QueueCount = 2,
                     QueueFamilyIndex = pair.GraphicsFamilyIndex
                 }
-            };
+            ];
         }
 
-        return new[]
-        {
+        return
+        [
             new DeviceQueueCreateInfo
             {
                 SType = StructureType.DeviceQueueCreateInfo,
@@ -297,10 +297,10 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
                 QueueCount = 1,
                 QueueFamilyIndex = pair.GraphicsFamilyIndex
             }
-        };
+        ];
     }
 
-    static ValueTuple<IntPtr, IntPtr> GetApplicationInfo(IList<GCHandle> handles)
+    static ValueTuple<IntPtr, IntPtr> GetApplicationInfo(List<GCHandle> handles)
     {
         byte[] applicationName = Encoding.UTF8.GetBytes(APPLICATION_NAME + '\0');
         byte[] engineName = Encoding.UTF8.GetBytes(ENGINE_NAME + '\0');
@@ -315,7 +315,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
             engineNameHandle.AddrOfPinnedObject());
     }
 
-    static ValueTuple<uint, IntPtr> GetInstanceExtensions(IWindow window, IList<GCHandle> handles, IEnumerable<string> additionalExtensions)
+    static ValueTuple<uint, IntPtr> GetInstanceExtensions(IWindow window, List<GCHandle> handles, IEnumerable<string> additionalExtensions)
     {
         var logger = Log.Logger.ForContextShortName<VulkanRenderContextFactory>();
         
@@ -340,7 +340,7 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         return new(unchecked((uint)extensions.Length), arrayHandle.AddrOfPinnedObject());
     }
 
-    static byte** GetDeviceExtensions(Vk vk, PhysicalDevice physicalDevice, IList<GCHandle> handles)
+    static byte** GetDeviceExtensions(Vk vk, PhysicalDevice physicalDevice, List<GCHandle> handles)
     {
         var logger = Log.Logger.ForContextShortName<VulkanRenderContextFactory>();
 
