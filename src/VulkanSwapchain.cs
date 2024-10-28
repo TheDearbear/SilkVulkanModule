@@ -59,13 +59,8 @@ internal unsafe sealed class VulkanSwapchain : Swapchain
         _renderPass = vkRenderPass;
         _capabilities = GetSwapchainCapabilities();
 
-        var requestedFormat = VulkanTools.Convert(_info.Format);
-
         var presentMode = PresentModeKHR.FifoKhr;
-
-        var surfaceFormat = _capabilities.SupportedSurfaceFormats.FirstOrDefault(
-            format => format.Format == requestedFormat && format.ColorSpace == ColorSpaceKHR.SpaceSrgbNonlinearKhr,
-            _capabilities.SupportedSurfaceFormats[0]);
+        var surfaceFormat = SelectSurfaceFormat(_info);
 
         _swapchainCreateInfo = new()
         {
@@ -133,6 +128,23 @@ internal unsafe sealed class VulkanSwapchain : Swapchain
         CurrentImage = index;
 
         return _framebuffers[CurrentImage];
+    }
+
+    SurfaceFormatKHR SelectSurfaceFormat(SwapchainInfo info)
+    {
+        var defaultFormat = _capabilities.SupportedSurfaceFormats[^1];
+
+        var requestedFormat = VulkanTools.Convert(info.Format);
+        var preferredColorSpace = VulkanTools.Convert(info.PreferredColorSpace);
+
+        var formats = _capabilities.SupportedSurfaceFormats.Where(format => format.Format == requestedFormat);
+
+        if (!formats.Any())
+        {
+            throw new ArgumentException($"Requested format {info.Format} is not supported by swapchain", nameof(info));
+        }
+
+        return formats.FirstOrDefault(format => format.ColorSpace == preferredColorSpace, formats.Last());
     }
 
     void CreateSwapchainAndFence(int width, int height)

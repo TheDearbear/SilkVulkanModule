@@ -49,7 +49,7 @@ internal static class VulkanTools
             paramList.Add(file);
             paramList.Add(cLine);
 
-            logger.Warning(sb.ToString(), paramList.ToArray());
+            logger.Warning(sb.ToString(), [.. paramList]);
         }
 
         if (result == Result.SuboptimalKhr)
@@ -101,8 +101,10 @@ internal static class VulkanTools
             TextureFormat.R16G16_UShort => Format.R16G16B16A16Uint,
             TextureFormat.R32G32B32_UInt => Format.R32G32B32Uint,
             TextureFormat.R32G32B32_Float => Format.R32G32B32Sfloat,
+            TextureFormat.R16G16B16A16_Float => Format.R16G16B16A16Sfloat,
             TextureFormat.R32G32B32A32_UInt => Format.R32G32B32A32Uint,
             TextureFormat.R32G32B32A32_Float => Format.R32G32B32A32Sfloat,
+            TextureFormat.A2B10G10R10_Float => Format.A2B10G10R10UnormPack32,
             TextureFormat.DXT1 => Format.BC1RgbUnormBlock,
             TextureFormat.DXT3 => Format.BC2UnormBlock,
             TextureFormat.DXT5 => Format.BC3UnormBlock,
@@ -259,4 +261,15 @@ internal static class VulkanTools
             return ImageAspectFlags.None;
         }
     }
+
+    public static ColorSpaceKHR Convert(ColorSpace colorSpace)
+        => colorSpace switch
+        {
+            ColorSpace.SRGB => ColorSpaceKHR.SpaceSrgbNonlinearKhr,
+            ColorSpace.ExtendedSRGB => ColorSpaceKHR.SpaceExtendedSrgbLinearExt,
+            ColorSpace.DisplayP3 => ColorSpaceKHR.SpaceDisplayP3LinearExt,
+            ColorSpace.DCIP3 => ColorSpaceKHR.SpaceDciP3LinearExt,
+            ColorSpace.HDR10 => ColorSpaceKHR.SpaceHdr10ST2084Ext,
+            _ => throw new ArgumentException("Unable to determine color space", nameof(colorSpace))
+        };
 }

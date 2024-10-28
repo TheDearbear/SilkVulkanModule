@@ -31,7 +31,8 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
 
     readonly static string[] _instanceExtensions =
     [
-        ExtDebugUtils.ExtensionName
+        ExtDebugUtils.ExtensionName,
+        "VK_EXT_swapchain_colorspace"
     ];
 
     const string ENGINE_NAME = "Speed Engine";
