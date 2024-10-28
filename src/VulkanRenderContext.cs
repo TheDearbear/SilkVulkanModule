@@ -10,6 +10,7 @@ using Speed.Engine.Render;
 using Speed.Engine.Render.Regions;
 using Speed.Engine.Sceneries;
 using Speed.Engine.Textures;
+using Speed.Viewer.Render.Backend;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -55,14 +56,16 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
     readonly ExtDebugUtils _debugUtils;
     readonly Device _device;
     readonly Instance _instance;
+    readonly VulkanRenderer _renderer;
 
     PfnDebugUtilsMessengerCallbackEXT? _debugCallback;
     DebugUtilsMessengerEXT? _messenger;
 
-    public VulkanRenderContext(ICamera camera, ILogger? logger, Vk vk)
+    public VulkanRenderContext(VulkanRenderer renderer, ICamera camera, ILogger? logger, Vk vk)
     {
         Logger = logger;
         RenderCamera = camera;
+        _renderer = renderer;
         _vk = vk;
 
         _device = _vk.CurrentDevice!.Value;
@@ -94,13 +97,22 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
         throw new NotImplementedException();
     }
 
+    // Should be called only by Speed.Engine-level
+    // code for creating ONLY objects' texture
     public Texture CreateTexture()
     {
-        throw new NotImplementedException();
+        return _renderer.BackendFactory.CreateTexture(new()
+        {
+            Samples = 1,
+            Tiling = TextureTiling.Optimal,
+            Usage = TextureUsage.Sampled
+        });
     }
 
     public void Dispose()
     {
+        _renderer.Dispose();
+
         _vk.DestroyDevice(_device, null);
 #if DEBUG
         UnregisterDebugMessenger();
@@ -134,7 +146,7 @@ internal unsafe sealed class VulkanRenderContext : IRenderContext
 
     public void Resize(uint width, uint height)
     {
-        //throw new NotImplementedException();
+        MathCamera.AspectRatio = RenderCamera.AspectRatio = (float)((double)width / height);
     }
 
     static DebugUtilsMessengerCallbackFunctionEXT CreateDebugMessengerCallback(ILogger loggerInstance)

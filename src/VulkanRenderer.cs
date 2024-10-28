@@ -18,29 +18,29 @@ internal sealed class VulkanRenderer : IRenderer
 {
     public IBackendFactory BackendFactory { get; }
 
-    public IRenderContext Context { get; }
+    public IRenderContext Context { get; internal set; }
 
     public bool ShadersSupported { get; } = true;
 
     public bool RenderPassSupported { get; } = true;
 
+    VulkanCommandBuffer _cmd;
+
     readonly Dictionary<VkCommandBuffer, Fence> _submitFences = [];
 
-    readonly VulkanCommandBuffer _cmd;
     readonly GraphicsPresentIndexPair _gpIndex;
-    readonly PhysicalDevice _physicalDevice;
     readonly Device _device;
     readonly Queue _graphicsQueue;
     readonly Queue _presentQueue;
     readonly KhrSwapchain _swapchainKhr;
     readonly Vk _vk;
 
-    public unsafe VulkanRenderer(Vk vk, PhysicalDevice physDevice, SurfaceKHR surface, GraphicsPresentIndexPair gpIndex, IRenderContext ctx)
+    internal VulkanRenderer(Vk vk, GraphicsPresentIndexPair gpIndex, IBackendFactory factory)
     {
         _gpIndex = gpIndex;
-        _physicalDevice = physDevice;
         _device = vk.CurrentDevice!.Value;
-        Context = ctx;
+        BackendFactory = factory;
+        Context = null!;
         
         _vk = vk;
         if (!_vk.TryGetDeviceExtension(_vk.CurrentInstance!.Value, _device, out _swapchainKhr))
@@ -48,7 +48,6 @@ internal sealed class VulkanRenderer : IRenderer
             throw new ArgumentException("Unable to obtain Vulkan swapchain extension!", nameof(vk));
         }
 
-        BackendFactory = new VulkanBackendFactory(_vk, _physicalDevice, surface, gpIndex);
 
         _vk.GetDeviceQueue(_device, _gpIndex.GraphicsFamilyIndex, 0, out _graphicsQueue);
         _vk.GetDeviceQueue(_device, _gpIndex.PresentFamilyIndex, 0, out _presentQueue);
@@ -58,8 +57,10 @@ internal sealed class VulkanRenderer : IRenderer
 
     public void Dispose()
     {
-        _cmd.Dispose();
-        BackendFactory.Dispose();
+        _cmd?.Dispose();
+        _cmd = null!;
+
+        _swapchainKhr.Dispose();
     }
 
     public unsafe void WaitForEnd(params SpeedCommandBuffer[] buffers)

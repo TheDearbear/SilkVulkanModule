@@ -107,8 +107,12 @@ internal unsafe sealed partial class VulkanRenderContextFactory : IRenderContext
         
         factoryLogger?.Debug("Using GPU with name: {GPUName}", VulkanTools.ConvertUTF8(props.DeviceName));
 
-        var ctx = new VulkanRenderContext(camera, logger, vk);
-        output = new(ctx, new VulkanRenderer(vk, devices[deviceIndex], vkSurface, queues, ctx));
+        var factory = new VulkanBackendFactory(vk, devices[deviceIndex], vkSurface, queues);
+        var renderer = new VulkanRenderer(vk, queues, factory);
+        var ctx = new VulkanRenderContext(renderer, camera, logger, vk);
+        renderer.Context = ctx;
+
+        output = new(ctx, renderer);
 
         return true;
     }
