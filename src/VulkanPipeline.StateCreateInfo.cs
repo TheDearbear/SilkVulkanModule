@@ -141,6 +141,16 @@ internal partial class VulkanPipeline
                 ColorComponentFlags.GBit |
                 ColorComponentFlags.BBit |
                 ColorComponentFlags.ABit;
+
+            colorBlend[i].BlendEnable = true;
+
+            colorBlend[i].SrcColorBlendFactor = BlendFactor.SrcAlpha;
+            colorBlend[i].DstColorBlendFactor = BlendFactor.One;
+            colorBlend[i].ColorBlendOp = BlendOp.Add;
+
+            colorBlend[i].SrcAlphaBlendFactor = BlendFactor.One;
+            colorBlend[i].DstAlphaBlendFactor = BlendFactor.Zero;
+            colorBlend[i].AlphaBlendOp = BlendOp.Add;
         }
 
         var handle1 = GCHandle.Alloc(colorBlend, GCHandleType.Pinned);
