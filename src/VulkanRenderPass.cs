@@ -45,7 +45,7 @@ internal unsafe sealed class VulkanRenderPass : SpeedRenderPass
             AccessFlags.ColorAttachmentReadBit | AccessFlags.ColorAttachmentWriteBit, null,
             DependencyFlags.None);
 
-        fixed (VkAttachmentDescription* pAttachments = descriptions.Select(x => Convert(x)).ToArray())
+        fixed (VkAttachmentDescription* pAttachments = descriptions.Select(Convert).ToArray())
         {
             RenderPassCreateInfo createInfo = new()
             {

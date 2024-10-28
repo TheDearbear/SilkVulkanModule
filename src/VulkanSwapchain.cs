@@ -85,6 +85,8 @@ internal unsafe sealed class VulkanSwapchain : Swapchain
     public override void Dispose()
     {
         _swapchainKhr.DestroySwapchain(_device, Swapchain, null);
+        _swapchainKhr.Dispose();
+        _surfaceKhr.Dispose();
         _vk.DestroyFence(_device, _fence, null);
         Swapchain = new();
         _fence = new();
