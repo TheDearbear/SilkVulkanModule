@@ -215,4 +215,48 @@ internal static class VulkanTools
             DescriptionType.InputAttachment => DescriptorType.InputAttachment,
             _ => throw new ArgumentException("Received unknown description type", nameof(type))
         };
+
+    public static ImageType Convert(TextureType type)
+        => type switch
+        {
+            TextureType.OneDimensional => ImageType.Type1D,
+            TextureType.TwoDimensional => ImageType.Type2D,
+            _ => throw new ArgumentException("Unable to get texture type", nameof(type))
+        };
+
+    public static ImageUsageFlags Convert(TextureUsage usage)
+        => ImageUsageFlags.TransferSrcBit | ImageUsageFlags.TransferDstBit | usage switch
+        {
+            TextureUsage.Sampled => ImageUsageFlags.SampledBit,
+            TextureUsage.Storage => ImageUsageFlags.StorageBit,
+            TextureUsage.ColorAttachment => ImageUsageFlags.ColorAttachmentBit,
+            TextureUsage.DepthStencilAttachment => ImageUsageFlags.DepthStencilAttachmentBit,
+            TextureUsage.InputAttachment => ImageUsageFlags.InputAttachmentBit,
+            _ => throw new ArgumentException("Unable to determine texture usage", nameof(usage))
+        };
+
+    public static ImageViewType Convert(ImageType type)
+        => type switch
+        {
+            ImageType.Type1D => ImageViewType.Type1D,
+            ImageType.Type2D => ImageViewType.Type2D,
+            ImageType.Type3D => ImageViewType.Type3D,
+            _ => throw new ArgumentException("Invalid value of image type passed", nameof(type))
+        };
+
+    public static ImageAspectFlags Convert(ImageUsageFlags usage)
+    {
+        if (usage.HasFlag(ImageUsageFlags.SampledBit) || usage.HasFlag(ImageUsageFlags.ColorAttachmentBit))
+        {
+            return ImageAspectFlags.ColorBit;
+        }
+        else if (usage.HasFlag(ImageUsageFlags.DepthStencilAttachmentBit))
+        {
+            return ImageAspectFlags.DepthBit | ImageAspectFlags.StencilBit;
+        }
+        else
+        {
+            return ImageAspectFlags.None;
+        }
+    }
 }

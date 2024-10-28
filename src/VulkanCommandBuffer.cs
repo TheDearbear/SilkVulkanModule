@@ -21,6 +21,7 @@ internal unsafe sealed partial class VulkanCommandBuffer : SpeedCommandBuffer
 {
     const string DifferentBackendError = "Object belongs to different backend!";
     const string RecordingError = "This action can be performed only while recording!";
+    const string TextureNotLoadedError = "Texture is not loaded!";
 
     public override SpeedFramebuffer? CurrentFramebuffer { get; set; }
 

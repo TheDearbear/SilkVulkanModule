@@ -10,10 +10,10 @@ internal unsafe sealed partial class VulkanTexture : Texture
     internal ValueTuple<Image, ImageView>? Image { get; private set; }
     internal ImageLayout NativeLayout { get; set; }
     internal TextureLayout Layout { get; set; }
+    internal TextureUsage Usage { get; set; }
 
     readonly int _samples;
     readonly TextureTiling _tiling;
-    readonly TextureUsage _usage;
 
     readonly Device _device;
     readonly Vk _vk;
@@ -27,9 +27,14 @@ internal unsafe sealed partial class VulkanTexture : Texture
         Mipmaps = info.MipLevels;
         Format = info.Format;
 
+        if (info.Samples < 0 || info.Samples > 0x7F)
+        {
+            throw new ArgumentException("Invalid number of samples", nameof(info));
+        }
+
         _samples = info.Samples;
         _tiling = info.Tiling;
-        _usage = info.Usage;
+        Usage = info.Usage;
         Layout = info.Layout;
         NativeLayout = VulkanTools.Convert(Layout);
     }
@@ -38,6 +43,45 @@ internal unsafe sealed partial class VulkanTexture : Texture
         : this(vk, info)
     {
         Image = new(image, view);
+    }
+
+    public ValueTuple<Image, ImageView> CreateImage()
+    {
+        if (Image.HasValue)
+        {
+            return Image.Value;
+        }
+
+        var createInfo = new ImageCreateInfo()
+        {
+            SType = StructureType.ImageCreateInfo,
+            ImageType = VulkanTools.Convert(Type),
+            Format = VulkanTools.Convert(Format),
+            Extent = new(unchecked((uint)Width), unchecked((uint)Height)),
+            MipLevels = 1,
+            ArrayLayers = 1,
+            Samples = (SampleCountFlags)_samples,
+            Tiling = _tiling == TextureTiling.Optimal ? ImageTiling.Optimal : ImageTiling.Linear,
+            Usage = VulkanTools.Convert(Usage),
+            SharingMode = SharingMode.Exclusive,
+            InitialLayout = NativeLayout
+        };
+
+        VulkanTools.Ensure(_vk.CreateImage(_device, in createInfo, null, out var image));
+
+        var viewCreateInfo = new ImageViewCreateInfo()
+        {
+            SType = StructureType.ImageViewCreateInfo,
+            Image = image,
+            ViewType = VulkanTools.Convert(createInfo.ImageType),
+            Format = createInfo.Format,
+            Components = new(ComponentSwizzle.Identity, ComponentSwizzle.Identity, ComponentSwizzle.Identity, ComponentSwizzle.Identity),
+            SubresourceRange = new(VulkanTools.Convert(createInfo.Usage), 0, Vk.RemainingMipLevels, 0, Vk.RemainingArrayLayers)
+        };
+
+        VulkanTools.Ensure(_vk.CreateImageView(_device, in viewCreateInfo, null, out var view));
+
+        return new(image, view);
     }
 
     public override void Dispose()
